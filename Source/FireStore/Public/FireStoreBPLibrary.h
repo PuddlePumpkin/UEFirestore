@@ -4,8 +4,9 @@
 
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RestHandler.h"
+#include "FStoreFunctions.h"
 #include "FireStoreBPLibrary.generated.h"
-
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FResponseDelegate);
 /* 
 *	Function library class.
 *	Each function in it is expected to be static and represents blueprint node that can be called in any blueprint.

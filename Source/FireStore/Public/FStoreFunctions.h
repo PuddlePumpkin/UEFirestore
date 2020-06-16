@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "RestHandler.generated.h"
+#include "FStoreFunctions.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FIRESTORE_API URestHandler : public UObject
+class FIRESTORE_API UFStoreFunctions : public UObject
 {
 	GENERATED_BODY()
 	
