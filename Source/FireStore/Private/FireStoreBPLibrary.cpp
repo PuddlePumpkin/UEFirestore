@@ -19,7 +19,10 @@ bool UFireStoreBPLibrary::FireStoreRequestTest()
 {
 	//RestHandler RH;
 	//RH.MyHttpCall("GET", "https://httpbin.org/get", true);
-//	MainFunctions::GetDocument("ya29.a0AfH6SMBHgBdwUIz0q-DeAGVziwXl43eDaPzrkqdhAMg5sgFs0Vu1MQOBHhdwjqVM0saS9LAOF1gwMA9F_yiuO3OcUkEO5SQwBi0K9G1qBuvPDrINRo11j9wSB_7vStcY_pPh8UDyfQ71eglvVDV-7LZ40zE-9ITP-ujN5JankDyng-ydga207dc0ouEtnKD9AqFCPtfeBKFK30BXtd9aENUB_yQxl6px0QGF4m-H9XgbgKlaci3XdnuG578x-kOQmypeXmZljTp9SA", "temp", "temp");
+	UFStoreFunctions* SF;
+	SF = NewObject<UFStoreFunctions>();
+	SF->RequestDocument("ya29.a0AfH6SMCiinpRRemRcMGMRMI-8690nXszOuhuPw22xepKcgdZTD1tms80DgGTudcP8EIVnc38hRo7LLhQ9KLpBLSDGHGMFO6tv80tF2NT-fc842OfP2aX_JVkksPQVI6WgAEs72IWMaCcgfnTaA9etA-THV1XWwkz9SDn4aNbc3kxsT0sFWX9ZNDRe86RBN8u_rKtDNW1nPBq5Ur4wnq5DDA6JKUeem0tm67QJA_a5oirCFnoqZB9F_5CR6UOjUsXS4PIz47WcSxrsw", "temp", "temp");
+	SF->ConditionalBeginDestroy();
 	return true;
 }
 
