@@ -1,3 +1,1 @@
-# MMOPROJECT
-
-Developed with Unreal Engine 4
+Plugin for interaction between Google Cloud Firestore and Unreal Engine
