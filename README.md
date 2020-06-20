@@ -1,1 +1,2 @@
-#Plugin for interaction between Google Cloud Firestore and Unreal Engine
+# UEFirestore
+Plugin for interaction between Google Cloud Firestore and Unreal Engine
