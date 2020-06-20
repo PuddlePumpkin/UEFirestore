@@ -10,7 +10,7 @@
 bool outsideBool = false;
 UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 FResponseDelegate RDelegate;
-void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FString> Headers, UFStoreFunctions* obj, void (UFStoreFunctions::*inFunc)(FString), bool PrintDebug)
+void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FString> Headers, UFStoreFunctions* obj, void (UFStoreFunctions::*inFunc)(TSharedPtr<FJsonObject>,FString), bool PrintDebug)
 {
 	//RDelegate.BindRaw();
 	//RDelegate.BindUObject(this, inFunc);
@@ -43,14 +43,14 @@ void URestHandler::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 	//Deserialize the json data given Reader and the actual object to deserialize
 	if (FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
-		//FString OutputString;
+		FString OutputString;
 		TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
 		FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 		if (outsideBool) {
 
 			GEngine->AddOnScreenDebugMessage(2, 10.0f, FColor::Green, OutputString);
 		}
-		RDelegate.ExecuteIfBound(OutputString);
+		RDelegate.ExecuteIfBound(JsonObject, OutputString);
 	}
 }
 
