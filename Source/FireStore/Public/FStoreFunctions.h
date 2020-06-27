@@ -12,42 +12,11 @@
 /**
  * 
  */
-USTRUCT()
-struct FIntegerValue
-{
-	GENERATED_USTRUCT_BODY()
-		UPROPERTY()
-		int32 integerValue;
-};
-USTRUCT()
 struct FStringValue
 {
 	GENERATED_USTRUCT_BODY()
 		UPROPERTY()
 		FString stringValue;
-};
-USTRUCT()
-struct FStringArrayValue
-{
-	GENERATED_USTRUCT_BODY()
-		UPROPERTY()
-		TArray<FStringValue> values;
-};
-USTRUCT()
-struct FSkills
-{
-	GENERATED_USTRUCT_BODY()
-		UPROPERTY()
-		FStringArrayValue arrayValue;
-};
-USTRUCT()
-struct FPlayerData
-{
-	GENERATED_USTRUCT_BODY()
-		UPROPERTY()
-		FStringValue Name;
-		UPROPERTY()
-		FSkills Skills;
 };
 
 UCLASS()
