@@ -14,15 +14,21 @@ float UFireStoreBPLibrary::FireStoreSampleFunction(float Param)
 {
 	return -1;
 }
-
-bool UFireStoreBPLibrary::FireStoreRequestTest()
+bool UFireStoreBPLibrary::FireStoreRequestTest(FString OAUTHToken, FString ProjectID, FString documentPath)
 {
-	//RestHandler RH;
-	//RH.MyHttpCall("GET", "https://httpbin.org/get", true);
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
-	SF->RequestDocument("ya29.a0AfH6SMDb9qeQB-ht2_FBVVCcLrMmQHwTMlSWzYmhz-OMzWZMu94k1yYFkw63y_tbsymxKSEC5acwZaviv_agOafYYTEI_ioZf4397xznOyhsxw-qfTLWtQFFM1BLeHM4ZS9v_JWzLs92E9WqtiDFHeIXTEAaE7qNMcqLQ6FgogyCwnJmgYpFaZ1qt5TAIavDlyIp5dfJVRHA_vNxKz3Ycu1qHthVR4tr7vlXGP447dbtVDx240n6c7gSJM2BSQ8GnyhNZIQLWfT2ZQ", "temp", "temp");
+	SF->RequestJsonDocument(OAUTHToken, ProjectID, documentPath);
 	SF->ConditionalBeginDestroy();
 	return true;
+}
+
+bool UFireStoreBPLibrary::FireStorePatch(FString OAUTHToken, FString ProjectID, FString documentPath, FString content, const FStringDelegate& Del)
+{
+	UFStoreFunctions* SF;
+	SF = NewObject<UFStoreFunctions>();
+	SF->WriteJsonDocument(OAUTHToken, ProjectID, documentPath, content.ReplaceCharWithEscapedChar(),Del);
+	SF->ConditionalBeginDestroy();
+	return false;
 }
 

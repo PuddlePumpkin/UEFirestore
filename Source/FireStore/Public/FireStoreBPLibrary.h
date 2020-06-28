@@ -24,14 +24,18 @@
 *	For more info on custom blueprint nodes visit documentation:
 *	https://wiki.unrealengine.com/Custom_Blueprint_Node_Creation
 */
+
 UCLASS()
 class UFireStoreBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
-
+		//UPROPERTY(BlueprintAssignable, Category = "uwu")
+		//FRresponseDelegate thingo;
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Execute Sample function", Keywords = "uwu FireStore sample test testing"), Category = "FireStoreTesting")
 		static float FireStoreSampleFunction(float Param);
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Request Test", Keywords = "FireStore rest test testing"), Category = "Firestore Functions")
-		static bool FireStoreRequestTest();
+		static bool FireStoreRequestTest(FString OAUTHToken, FString ProjectID, FString documentPath);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "document update", Keywords = "FireStore rest test testing"), Category = "Firestore Functions")
+		static bool FireStorePatch(FString OAUTHToken,FString ProjectID,FString documentPath, FString content, const FStringDelegate& Del);
 };

@@ -10,7 +10,7 @@
 bool outsideBool = false;
 UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 FResponseDelegate RDelegate;
-void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FString> Headers, UFStoreFunctions* obj, void (UFStoreFunctions::*inFunc)(TSharedPtr<FJsonObject>,FString), bool PrintDebug)
+void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FString> Headers,UFStoreFunctions* obj, void (UFStoreFunctions::*inFunc)(TSharedPtr<FJsonObject>,FString), bool PrintDebug, FString body)
 {
 	//RDelegate.BindRaw();
 	//RDelegate.BindUObject(this, inFunc);
@@ -26,6 +26,10 @@ void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FStri
 	//This is the url on which to process the request
 	Request->SetURL(Address);
 	Request->SetVerb(Verb);
+	Request->SetHeader("Content-Type", "application/json");
+	if (Verb == "PATCH") {
+		Request->SetContentAsString(body);
+	}
 	outsideBool = PrintDebug;
 	Request->ProcessRequest();
 }
@@ -52,10 +56,5 @@ void URestHandler::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr 
 		}
 		RDelegate.ExecuteIfBound(JsonObject, OutputString);
 	}
-}
-
-void URestHandler::FuckedTest(FString test)
-{
-	GEngine->AddOnScreenDebugMessage(1, 10.0f, FColor::Red, "LITTERALLY KILL ME");
 }
 
