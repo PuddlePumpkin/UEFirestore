@@ -14,11 +14,11 @@ float UFireStoreBPLibrary::FireStoreSampleFunction(float Param)
 {
 	return -1;
 }
-bool UFireStoreBPLibrary::FireStoreRequestTest(FString OAUTHToken, FString ProjectID, FString documentPath)
+bool UFireStoreBPLibrary::FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
-	SF->RequestJsonDocument(OAUTHToken, ProjectID, documentPath);
+	SF->RequestJsonDocument(OAUTHToken, ProjectID, documentPath, Del);
 	SF->ConditionalBeginDestroy();
 	return true;
 }

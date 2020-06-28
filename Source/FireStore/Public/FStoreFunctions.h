@@ -34,7 +34,7 @@ class FIRESTORE_API UFStoreFunctions : public UObject
 	GENERATED_BODY()
 public:
 		FStringDelegate ResponseDelegate;
-		void RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath);
+		void RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, const FStringDelegate& Del);
 		void RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString AsStr);
 		UFUNCTION()
 		void WriteJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, FString JString, const FStringDelegate& Del);

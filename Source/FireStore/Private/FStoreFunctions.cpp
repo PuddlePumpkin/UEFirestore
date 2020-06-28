@@ -4,13 +4,15 @@
 #include "FStoreFunctions.h"
 
 
-void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath)
+void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, const FStringDelegate& Del)
 {
+	ResponseDelegate = Del;
 	URestHandler* RH;
 	RH = NewObject<URestHandler>();
 	TMap<FString, FString> HeaderMap;
 	HeaderMap.Add("Authorization", "Bearer " + OAuthToken);
-	RH->MyHttpCall("GET", "https://firestore.googleapis.com/v1/projects/***REMOVED***/databases/(default)/documents/DediServerUserData/ExampleUser", HeaderMap,this,&UFStoreFunctions::RecieveJsonDocument,true);
+	FString urlStr = preparePathString(ProjectID, DocumentPath);
+	RH->MyHttpCall("GET", urlStr, HeaderMap,this,&UFStoreFunctions::RecieveJsonDocument,false);
 	RH->ConditionalBeginDestroy();
 }
 void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString AsStr)
@@ -29,7 +31,8 @@ void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString 
 
 	//Print result
 	UE_LOG(LogTemp, Display, TEXT("%s"),*clippedStr);
-	UE_LOG(LogTemp, Display, TEXT("SubJson: %s"),*js.json.stringValue)
+	UE_LOG(LogTemp, Display, TEXT("SubJson: %s"), *js.json.stringValue)
+	ResponseDelegate.ExecuteIfBound(*js.json.stringValue);
 	UE_LOG(LogHttp, Display, TEXT("End Response"));
 }
 void UFStoreFunctions::WriteJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, FString JString, const FStringDelegate& Del)
