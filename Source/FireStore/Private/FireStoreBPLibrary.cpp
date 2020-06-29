@@ -32,3 +32,11 @@ bool UFireStoreBPLibrary::FireStorePatch(FString OAUTHToken, FString ProjectID, 
 	return false;
 }
 
+void UFireStoreBPLibrary::getAccessTok(FString filename)
+{
+	UFStoreFunctions* SF;
+	SF = NewObject<UFStoreFunctions>();
+	SF->getToken();
+	SF->ConditionalBeginDestroy();
+}
+

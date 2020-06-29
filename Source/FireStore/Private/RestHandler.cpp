@@ -26,8 +26,14 @@ void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FStri
 	//This is the url on which to process the request
 	Request->SetURL(Address);
 	Request->SetVerb(Verb);
+	if (Verb != "POST") {
 	Request->SetHeader("Content-Type", "application/json");
-	if (Verb == "PATCH") {
+	}
+	else {
+	Request->SetHeader("Content-Type", "application/x-www-form-urlencoded");
+	}
+	if (Verb == "PATCH" || Verb == "POST") {
+		UE_LOG(LogHttp, Display, TEXT("requested"));
 		Request->SetContentAsString(body);
 	}
 	outsideBool = PrintDebug;

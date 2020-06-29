@@ -35,4 +35,6 @@ class UFireStoreBPLibrary : public UBlueprintFunctionLibrary
 		static bool FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Update Firestore Document", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
 		static bool FireStorePatch(FString OAUTHToken,FString ProjectID,FString documentPath, FString content, const FStringDelegate& Del);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get GCloud Access Token", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
+		static void getAccessTok(FString filename);
 };

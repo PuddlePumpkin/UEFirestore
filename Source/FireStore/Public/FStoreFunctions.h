@@ -40,5 +40,7 @@ public:
 		void WriteJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, FString JString, const FStringDelegate& Del);
 		void WriteResponse(TSharedPtr<FJsonObject> PTR, FString AsStr);
 		static FString preparePathString(FString ProjectID, FString DocumentPath);
+		UFUNCTION()
+		void getToken();
 };
 
