@@ -21,9 +21,9 @@ public:
 	//FResponseDelegate RDelegate;
 	FHttpModule* Http;
 
-	/* The actual HTTP call */
+	//HTTP Call
 	void MyHttpCall(FString Verb, FString Address, TMap<FString, FString> Headers,UFStoreFunctions* obj, void (UFStoreFunctions::* inFunc)(TSharedPtr<FJsonObject>,FString), bool PrintDebug = false, FString body = "");
 
-	/*Assign this function to call when the GET request processes sucessfully*/
+	//HTTP Callback
 	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 };

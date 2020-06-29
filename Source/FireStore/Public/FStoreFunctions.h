@@ -12,7 +12,6 @@
 /**
  * 
  */
-//DECLARE_DYNAMIC_DELEGATE_OneParam(FRresponseDelegate, FString, FString);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FStringDelegate, FString, str);
 USTRUCT()
 struct FJSString
@@ -32,15 +31,24 @@ UCLASS()
 class FIRESTORE_API UFStoreFunctions : public UObject
 {
 	GENERATED_BODY()
-public:
+private:
+		//Callback Function for "getToken()"
+		void RecieveAccessToken(TSharedPtr<FJsonObject> PTR, FString AsStr);
+		//helper function prepares a file path string from a project id and document path.
+		static FString preparePathString(FString ProjectID, FString DocumentPath);
 		FStringDelegate ResponseDelegate;
+public:
+		//Reads a document from given path
 		void RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, const FStringDelegate& Del);
+		//Callback Function for "RequestJsonDocument()"
 		void RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString AsStr);
 		UFUNCTION()
+		//Writes a document with given Json String
 		void WriteJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, FString JString, const FStringDelegate& Del);
-		void WriteResponse(TSharedPtr<FJsonObject> PTR, FString AsStr);
-		static FString preparePathString(FString ProjectID, FString DocumentPath);
+		//Callback Function for "WriteJsonDocument()"
+		void RecieveWriteResponse(TSharedPtr<FJsonObject> PTR, FString AsStr);
 		UFUNCTION()
-		void getToken();
+		//Gets a access token from the Service account json file specified.
+		void getToken(FString filename, const FStringDelegate& Del);
 };
 

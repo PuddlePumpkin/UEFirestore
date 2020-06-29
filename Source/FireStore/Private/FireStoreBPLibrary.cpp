@@ -32,11 +32,16 @@ bool UFireStoreBPLibrary::FireStorePatch(FString OAUTHToken, FString ProjectID, 
 	return false;
 }
 
-void UFireStoreBPLibrary::getAccessTok(FString filename)
+void UFireStoreBPLibrary::getAccessToken(FString filename, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
-	SF->getToken();
+	SF->getToken(filename,Del);
 	SF->ConditionalBeginDestroy();
+}
+
+FString UFireStoreBPLibrary::SerializeStructToJson(const FProperty* Struct)
+{
+	return "meow";
 }
 

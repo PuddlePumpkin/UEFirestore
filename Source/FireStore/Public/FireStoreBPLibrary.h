@@ -31,10 +31,12 @@ class UFireStoreBPLibrary : public UBlueprintFunctionLibrary
 	GENERATED_UCLASS_BODY()
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Execute Sample function", Keywords = "uwu FireStore sample test testing"), Category = "FireStoreTesting")
 		static float FireStoreSampleFunction(float Param);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Request Firestore Document", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
+	UFUNCTION(BlueprintCallable, meta = (Tooltip = "Request a firestore document to read",DisplayName = "Request Firestore Document", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
 		static bool FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Update Firestore Document", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
+	UFUNCTION(BlueprintCallable, meta = (Tooltip = "Updates a firestore document with given string",DisplayName = "Update Firestore Document", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
 		static bool FireStorePatch(FString OAUTHToken,FString ProjectID,FString documentPath, FString content, const FStringDelegate& Del);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get GCloud Access Token", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
-		static void getAccessTok(FString filename);
+	UFUNCTION(BlueprintCallable, meta = (Tooltip = "Requests a new access token for google cloud",DisplayName = "Get GCloud Access Token", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
+		static void getAccessToken(FString filename, const FStringDelegate& Del);
+	UFUNCTION(BlueprintCallable, meta = (CustomStructureParam = "Struct", Tooltip = "Serializes struct to json string", DisplayName = "Json Serialize Struct", Keywords = "FireStore database datastore json"),CustomThunk, Category = "Firestore Json Functions")
+		static FString SerializeStructToJson(const FProperty* Struct);
 };
