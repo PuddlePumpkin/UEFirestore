@@ -15,10 +15,20 @@ void UFSJsonObject::SetStringArrayField(FString fieldName, TArray<FString> strin
 		jsonStrArray.Add(MakeShareable(new FJsonValueString(Str)));
 	}
 	jobj->SetArrayField(fieldName, jsonStrArray);
-
-	FString OutputString;
-	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
-	FJsonSerializer::Serialize(jobj.ToSharedRef(),Writer);
-	UE_LOG(LogHttp, Display, TEXT("response: %s"), *OutputString);
+	//FString OutputString;
+	//TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
+	//FJsonSerializer::Serialize(jobj.ToSharedRef(),Writer);
+	//UE_LOG(LogHttp, Display, TEXT("response: %s"), *OutputString);
 }
 //todo read stuff:
+FString UFSJsonObject::GetJsonString() 
+{
+	FString OutputString;
+	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
+	FJsonSerializer::Serialize(jobj.ToSharedRef(), Writer);
+	return OutputString;
+}
+void UFSJsonObject::ClearJson()
+{
+	jobj = MakeShareable(new FJsonObject);
+}

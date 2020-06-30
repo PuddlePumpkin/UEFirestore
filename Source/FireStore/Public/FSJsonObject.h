@@ -14,9 +14,15 @@ UCLASS(BlueprintType)
 class FIRESTORE_API UFSJsonObject : public UObject
 {
 	GENERATED_BODY()
-	UFUNCTION(BlueprintCallable, meta = (Tooltip = "sets a string field", DisplayName = "Set string field", Keywords = "FireStore database datastore json"), Category = "Firestore Functions")
-		void SetStringField(FString fieldName, FString string);
-	UFUNCTION(BlueprintCallable, meta = (Tooltip = "sets a string array field", DisplayName = "Set string array field", Keywords = "FireStore database datastore json"), Category = "Firestore Functions")
-		void SetStringArrayField(FString fieldName, TArray<FString> stringArray);
 	TSharedPtr<FJsonObject> jobj = MakeShareable(new FJsonObject);
+	//sets
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Set String Field", Tooltip = "Sets a string field.", Keywords = "FireStore database datastore json"), Category = "Firestore Json")
+		void SetStringField(FString fieldName, FString string);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Set String Array Field", Tooltip = "Sets a string array field.", Keywords = "FireStore database datastore json"), Category = "Firestore Json")
+		void SetStringArrayField(FString fieldName, TArray<FString> stringArray);
+	//util
+	UFUNCTION(BlueprintPure , meta = (DisplayName = "Get Json String", Tooltip = "Gets a string from json object.", Keywords = "FireStore database datastore json"), Category = "Firestore Json")
+		FString GetJsonString();
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Clear Json", Tooltip = "Resets a json object to default", Keywords = "FireStore database datastore json"), Category = "Firestore Json")
+		void ClearJson();
 };
