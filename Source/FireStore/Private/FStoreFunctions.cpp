@@ -72,10 +72,10 @@ FString UFStoreFunctions::preparePathString(FString ProjectID, FString DocumentP
 	return ("https://firestore.googleapis.com/v1/projects/" + ProjectID + "/databases/(default)/documents/" + DocumentPath);
 }
 
-void UFStoreFunctions::getToken(FString filename, const FStringDelegate& Del)
+bool UFStoreFunctions::getToken(FString filename, const FStringDelegate& Del)
 {
 	//file prep
-	FString jsonFile = "C:\\Users\\Kira\\Desktop\\***REMOVED***-1e30ffe5c7eb.json";
+	FString jsonFile = filename;
 	const TCHAR* file = *jsonFile;
 	FString result;
 
@@ -84,28 +84,39 @@ void UFStoreFunctions::getToken(FString filename, const FStringDelegate& Del)
 	UE_LOG(LogHttp, Display, TEXT("File found: %s"), bout ? TEXT("true") : TEXT("false"));\
 
 	//parse file
-	FString pkey = "***REMOVED***";
+	TSharedPtr<FJsonObject> fileJson = MakeShareable(new FJsonObject());
+	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(result);
 
-//prepare jwt token
-auto token = jwt::create()
-	.set_issuer("***REMOVED***")
-	.set_type("JWS")
-	.set_subject("***REMOVED***")
-	.set_audience("https://oauth2.googleapis.com/token")
-	.set_payload_claim("scope", jwt::claim(std::string("https://www.googleapis.com/auth/datastore")))
-	.set_issued_at(std::chrono::system_clock::now())
-	.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
-	.sign(jwt::algorithm::rs256{"secret",std::string(TCHAR_TO_UTF8(*pkey))});
+	if (FJsonSerializer::Deserialize(JsonReader, fileJson) && fileJson.IsValid())
+	{
+		FString pkey = fileJson->GetStringField("private_key");
 
-ResponseDelegate = Del;
-//prepare http call
-URestHandler* RH;
-RH = NewObject<URestHandler>();
-TMap<FString, FString> HeaderMap;
-FString tokToFString = token.c_str();
-FString PayloadString = "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + tokToFString;
+		//prepare jwt token
+		auto token = jwt::create()
+			.set_issuer(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
+			.set_type("JWS")
+			.set_subject(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
+			.set_audience("https://oauth2.googleapis.com/token")
+			.set_payload_claim("scope", jwt::claim(std::string("https://www.googleapis.com/auth/datastore")))
+			.set_issued_at(std::chrono::system_clock::now())
+			.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
+			.sign(jwt::algorithm::rs256{ "secret",std::string(TCHAR_TO_UTF8(*pkey)) });
 
-//make http call
-RH->MyHttpCall("POST", "https://oauth2.googleapis.com/token", HeaderMap, this, &UFStoreFunctions::RecieveAccessToken, false,PayloadString);
-RH->ConditionalBeginDestroy();
+		ResponseDelegate = Del;
+		//prepare http call
+		URestHandler* RH;
+		RH = NewObject<URestHandler>();
+		TMap<FString, FString> HeaderMap;
+		FString tokToFString = token.c_str();
+		FString PayloadString = "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + tokToFString;
+
+		//make http call
+		RH->MyHttpCall("POST", "https://oauth2.googleapis.com/token", HeaderMap, this, &UFStoreFunctions::RecieveAccessToken, false, PayloadString);
+		RH->ConditionalBeginDestroy();
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
 }

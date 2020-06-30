@@ -49,6 +49,6 @@ public:
 		void RecieveWriteResponse(TSharedPtr<FJsonObject> PTR, FString AsStr);
 		UFUNCTION()
 		//Gets a access token from the Service account json file specified.
-		void getToken(FString filename, const FStringDelegate& Del);
+		bool getToken(FString filename, const FStringDelegate& Del);
 };
 

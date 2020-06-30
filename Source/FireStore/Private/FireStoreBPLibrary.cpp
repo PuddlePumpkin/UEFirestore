@@ -32,10 +32,10 @@ bool UFireStoreBPLibrary::FireStorePatch(FString OAUTHToken, FString ProjectID, 
 	return false;
 }
 
-void UFireStoreBPLibrary::getAccessToken(FString filename, const FStringDelegate& Del)
+void UFireStoreBPLibrary::getAccessToken(FString FileDirectory, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
-	SF->getToken(filename,Del);
+	SF->getToken(FileDirectory,Del);
 	SF->ConditionalBeginDestroy();
 }
