@@ -37,6 +37,6 @@ class UFireStoreBPLibrary : public UBlueprintFunctionLibrary
 		static bool FireStorePatch(FString OAUTHToken,FString ProjectID,FString documentPath, FString content, const FStringDelegate& Del);
 	UFUNCTION(BlueprintCallable, meta = (Tooltip = "Requests a new access token for google cloud",DisplayName = "Get GCloud Access Token", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
 		static void getAccessToken(FString filename, const FStringDelegate& Del);
-	UFUNCTION(BlueprintCallable, meta = (CustomStructureParam = "Struct", Tooltip = "Serializes struct to json string", DisplayName = "Json Serialize Struct", Keywords = "FireStore database datastore json"),CustomThunk, Category = "Firestore Json Functions")
-		static FString SerializeStructToJson(const FProperty* Struct);
+	//UFUNCTION(BlueprintCallable, meta = (Tooltip = ", DisplayName = "Json Serialize Struct", Keywords = "FireStore database datastore json"), Category = "Firestore Json Functions")
+		//static FString meowy(const FProperty* Struct);
 };

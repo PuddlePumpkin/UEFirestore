@@ -39,9 +39,3 @@ void UFireStoreBPLibrary::getAccessToken(FString filename, const FStringDelegate
 	SF->getToken(filename,Del);
 	SF->ConditionalBeginDestroy();
 }
-
-FString UFireStoreBPLibrary::SerializeStructToJson(const FProperty* Struct)
-{
-	return "meow";
-}
-
