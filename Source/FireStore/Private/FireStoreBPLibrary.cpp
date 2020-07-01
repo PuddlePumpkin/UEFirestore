@@ -9,11 +9,6 @@ UFireStoreBPLibrary::UFireStoreBPLibrary(const FObjectInitializer& ObjectInitial
 {
 
 }
-
-float UFireStoreBPLibrary::FireStoreSampleFunction(float Param)
-{
-	return -1;
-}
 bool UFireStoreBPLibrary::FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
