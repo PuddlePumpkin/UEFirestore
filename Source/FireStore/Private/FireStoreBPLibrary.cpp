@@ -4,11 +4,11 @@
 #include "FireStore.h"
 #include "RestHandler.h"
 
-UFireStoreBPLibrary::UFireStoreBPLibrary(const FObjectInitializer& ObjectInitializer)
-: Super(ObjectInitializer)
-{
-
-}
+//UFireStoreBPLibrary::UFireStoreBPLibrary(const FObjectInitializer& ObjectInitializer)
+//: Super(ObjectInitializer)
+//{
+//
+//}
 bool UFireStoreBPLibrary::FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;

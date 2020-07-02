@@ -10,8 +10,9 @@
 UCLASS()
 class UFireStoreBPLibrary : public UBlueprintFunctionLibrary
 {
-	GENERATED_UCLASS_BODY()
-		//outside the FSJsonObject functions, these are the main functions callable in the plugin
+	//GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
+		//These are the main functions callable in the plugin
 		//rewriting the functions they use to be static and blueprintable would require major rewrites of each
 	UFUNCTION(BlueprintCallable, meta = (Tooltip = "Request a firestore document to read",DisplayName = "Request Firestore Document", Keywords = "FireStore database datastore"), Category = "Firestore Functions")
 		static bool FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del);
