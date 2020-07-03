@@ -5,30 +5,36 @@
 #include "jwt.h"
 
 //Begin main functions
-bool UFStoreFunctions::FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del)
+void UFStoreFunctions::FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
 	SF->RequestJsonDocument(OAUTHToken, ProjectID, documentPath, Del);
 	SF->ConditionalBeginDestroy();
-	return true;
 }
 
-bool UFStoreFunctions::FireStorePatch(FString OAUTHToken, FString ProjectID, FString documentPath, FString content, const FStringDelegate& Del)
+void UFStoreFunctions::FireStorePatch(FString OAUTHToken, FString ProjectID, FString documentPath, FString content, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
 	SF->WriteJsonDocument(OAUTHToken, ProjectID, documentPath, content.ReplaceCharWithEscapedChar(), Del);
 	SF->ConditionalBeginDestroy();
-	return false;
 }
 
-void UFStoreFunctions::getAccessToken(FString FileDirectory, const FStringDelegate& Del)
+bool UFStoreFunctions::getAccessToken(FString FileDirectory, const FStringDelegate& Del)
 {
 	UFStoreFunctions* SF;
 	SF = NewObject<UFStoreFunctions>();
-	SF->getToken(FileDirectory, Del);
-	SF->ConditionalBeginDestroy();
+	if (SF->getToken(FileDirectory, Del))
+	{
+		SF->ConditionalBeginDestroy();
+		return true;
+	}
+	else 
+	{
+		SF->ConditionalBeginDestroy();
+		return false;
+	}
 }
 //End main functions
 void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, const FStringDelegate& Del)
@@ -102,46 +108,53 @@ bool UFStoreFunctions::getToken(FString filename, const FStringDelegate& Del)
 {
 	//file prep
 	FString jsonFile = filename;
+	jsonFile = jsonFile.TrimQuotes();
 	const TCHAR* file = *jsonFile;
 	FString result;
 
 	//load file
 	bool bout = FFileHelper::LoadFileToString(result, file);
-	UE_LOG(LogHttp, Display, TEXT("File found: %s"), bout ? TEXT("true") : TEXT("false"));\
-
-	//parse file
-	TSharedPtr<FJsonObject> fileJson = MakeShareable(new FJsonObject());
-	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(result);
-
-	if (FJsonSerializer::Deserialize(JsonReader, fileJson) && fileJson.IsValid())
+	UE_LOG(LogHttp, Display, TEXT("File found: %s"), bout ? TEXT("true") : TEXT("false"));
+	if (bout)
 	{
-		FString pkey = fileJson->GetStringField("private_key");
+		//parse file
+		TSharedPtr<FJsonObject> fileJson = MakeShareable(new FJsonObject());
+		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(result);
 
-		//prepare jwt token
-		auto token = jwt::create()
-			.set_issuer(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
-			.set_type("JWS")
-			.set_subject(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
-			.set_audience("https://oauth2.googleapis.com/token")
-			.set_payload_claim("scope", jwt::claim(std::string("https://www.googleapis.com/auth/datastore")))
-			.set_issued_at(std::chrono::system_clock::now())
-			.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
-			.sign(jwt::algorithm::rs256{ "secret",std::string(TCHAR_TO_UTF8(*pkey)) });
+		if (FJsonSerializer::Deserialize(JsonReader, fileJson) && fileJson.IsValid())
+		{
+			FString pkey = fileJson->GetStringField("private_key");
 
-		ResponseDelegate = Del;
-		//prepare http call
-		URestHandler* RH;
-		RH = NewObject<URestHandler>();
-		TMap<FString, FString> HeaderMap;
-		FString tokToFString = token.c_str();
-		FString PayloadString = "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + tokToFString;
+			//prepare jwt token
+			auto token = jwt::create()
+				.set_issuer(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
+				.set_type("JWS")
+				.set_subject(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
+				.set_audience("https://oauth2.googleapis.com/token")
+				.set_payload_claim("scope", jwt::claim(std::string("https://www.googleapis.com/auth/datastore")))
+				.set_issued_at(std::chrono::system_clock::now())
+				.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
+				.sign(jwt::algorithm::rs256{ "secret",std::string(TCHAR_TO_UTF8(*pkey)) });
 
-		//make http call
-		RH->MyHttpCall("POST", "https://oauth2.googleapis.com/token", HeaderMap, this, &UFStoreFunctions::RecieveAccessToken, false, PayloadString);
-		RH->ConditionalBeginDestroy();
-		return true;
+			ResponseDelegate = Del;
+			//prepare http call
+			URestHandler* RH;
+			RH = NewObject<URestHandler>();
+			TMap<FString, FString> HeaderMap;
+			FString tokToFString = token.c_str();
+			FString PayloadString = "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + tokToFString;
+
+			//make http call
+			RH->MyHttpCall("POST", "https://oauth2.googleapis.com/token", HeaderMap, this, &UFStoreFunctions::RecieveAccessToken, false, PayloadString);
+			RH->ConditionalBeginDestroy();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else 
+	else
 	{
 		return false;
 	}
