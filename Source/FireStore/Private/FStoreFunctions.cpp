@@ -44,10 +44,9 @@ void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID
 }
 void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString AsStr)
 {
-	//Firestore uses nested arrays for map fields
-	//to access sub arrays declare a ustruct matching the format of your document field see https://stackoverflow.com/questions/30342465/c-nested-json-in-unreal-engine-4
-	//make player data struct
+	//make data struct
 	FJsContainer js;
+
 	//remove json container
 	FString clippedStr;
 	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&clippedStr);
