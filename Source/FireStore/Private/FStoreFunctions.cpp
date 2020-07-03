@@ -4,6 +4,33 @@
 #include "FStoreFunctions.h"
 #include "jwt.h"
 
+//Begin main functions
+bool UFStoreFunctions::FireStoreRequest(FString OAUTHToken, FString ProjectID, FString documentPath, const FStringDelegate& Del)
+{
+	UFStoreFunctions* SF;
+	SF = NewObject<UFStoreFunctions>();
+	SF->RequestJsonDocument(OAUTHToken, ProjectID, documentPath, Del);
+	SF->ConditionalBeginDestroy();
+	return true;
+}
+
+bool UFStoreFunctions::FireStorePatch(FString OAUTHToken, FString ProjectID, FString documentPath, FString content, const FStringDelegate& Del)
+{
+	UFStoreFunctions* SF;
+	SF = NewObject<UFStoreFunctions>();
+	SF->WriteJsonDocument(OAUTHToken, ProjectID, documentPath, content.ReplaceCharWithEscapedChar(), Del);
+	SF->ConditionalBeginDestroy();
+	return false;
+}
+
+void UFStoreFunctions::getAccessToken(FString FileDirectory, const FStringDelegate& Del)
+{
+	UFStoreFunctions* SF;
+	SF = NewObject<UFStoreFunctions>();
+	SF->getToken(FileDirectory, Del);
+	SF->ConditionalBeginDestroy();
+}
+//End main functions
 void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, const FStringDelegate& Del)
 {
 	ResponseDelegate = Del;
