@@ -1,4 +1,4 @@
-// Some copyright should be here...
+//
 
 using UnrealBuildTool;
 using System.IO;

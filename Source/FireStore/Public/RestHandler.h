@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2020 Keira Karanik
 
 #pragma once
 
@@ -17,8 +17,6 @@ class FIRESTORE_API URestHandler : public UObject
 {
 	GENERATED_BODY()
 public:
-	//UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
-	//FResponseDelegate RDelegate;
 	FHttpModule* Http;
 
 	//HTTP Call

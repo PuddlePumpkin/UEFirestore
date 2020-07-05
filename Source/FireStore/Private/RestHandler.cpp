@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2020 Keira Karanik
 
 
 #include "RestHandler.h"
@@ -12,8 +12,6 @@ UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 FResponseDelegate RDelegate;
 void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FString> Headers,UFStoreFunctions* obj, void (UFStoreFunctions::*inFunc)(TSharedPtr<FJsonObject>,FString), bool PrintDebug, FString body)
 {
-	//RDelegate.BindRaw();
-	//RDelegate.BindUObject(this, inFunc);
 	RDelegate.BindUObject(obj, inFunc);
 	Http = &FHttpModule::Get();
 	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
@@ -23,7 +21,6 @@ void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FStri
 	{
 		Request->SetHeader(Elem.Key, Elem.Value);
 	}
-	//This is the url on which to process the request
 	Request->SetURL(Address);
 	Request->SetVerb(Verb);
 	if (Verb != "POST") {
@@ -39,18 +36,12 @@ void URestHandler::MyHttpCall(FString Verb, FString Address, TMap<FString, FStri
 	outsideBool = PrintDebug;
 	Request->ProcessRequest();
 }
-
-
-/*Assigned function on successfull http call*/
 void URestHandler::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
-	//Create a pointer to hold the json serialized data
 	TSharedPtr<FJsonObject> JsonObject;
-
-	//Create a reader pointer to read the json data
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 
-	//Deserialize the json data given Reader and the actual object to deserialize
+	//Deserialize
 	if (FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
 		FString OutputString;

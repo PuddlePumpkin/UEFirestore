@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2020 Keira Karanik
 
 
 #include "FStoreFunctions.h"
@@ -58,7 +58,7 @@ void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString 
 	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&clippedStr);
 	FJsonSerializer::Serialize(PTR->GetObjectField("fields").ToSharedRef(), Writer);
 
-	//write to player data
+	//write to str
 	FJsonObjectConverter::JsonObjectStringToUStruct<FJsContainer>(clippedStr,&js,0, 0);
 
 	//Print result
