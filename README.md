@@ -1,6 +1,12 @@
-**Warning** this plugin is only designed for usage via a GCloud service account. This means it will only work server side because it needs a reference to a service account key file. Client side communication could be added but will require Google account logins to your game.
+UEFirestore is **NOT** affiliated, associated, authorized, endorsed by, or in any way officially connected with Google, or any of its subsidiaries.
+
+All product and company names are trademarks or registered trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
+
 # UEFirestore
 **Unofficial** plugin for interaction between Google Cloud Firestore and Unreal Engine
+
+**Warning** this plugin is only designed for usage via a GCloud service account. This means it will only work server side because it needs a reference to a service account key file. THIS PLUGIN IS CAPABLE OF DELETING FIRESTORE DATA, Loss of data is not the responsiblity of the author of UEFirestore. Be careful.
+
 ### About
 This plugin works by communicating to the firestore api via rest. it currently does not support the firestore built in json system so this plugin may only write one string (probably a Json string) to each document viewable on the cloud console. This is effectively as powerful, but will not display pretty on the cloud console.
 ### Blueprint Usage
