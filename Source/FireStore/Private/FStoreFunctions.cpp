@@ -45,7 +45,7 @@ void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID
 	TMap<FString, FString> HeaderMap;
 	HeaderMap.Add("Authorization", "Bearer " + OAuthToken);
 	FString urlStr = preparePathString(ProjectID, DocumentPath);
-	RH->MyHttpCall("GET", urlStr, HeaderMap,this,&UFStoreFunctions::RecieveJsonDocument,false);
+	RH->MyHttpCall("GET", urlStr, HeaderMap,this,&UFStoreFunctions::RecieveJsonDocument,true);
 	RH->ConditionalBeginDestroy();
 }
 void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString AsStr)
@@ -64,7 +64,14 @@ void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString 
 	//Print result
 	UE_LOG(LogTemp, Display, TEXT("%s"),*clippedStr);
 	UE_LOG(LogTemp, Display, TEXT("SubJson: %s"), *js.json.stringValue)
-	ResponseDelegate.ExecuteIfBound(*js.json.stringValue);
+		if (PTR->HasField("fields"))
+		{
+			ResponseDelegate.ExecuteIfBound(*js.json.stringValue, true);
+		}
+		else
+		{
+			ResponseDelegate.ExecuteIfBound(*js.json.stringValue, false);
+		}
 	UE_LOG(LogHttp, Display, TEXT("End Response"));
 }
 void UFStoreFunctions::WriteJsonDocument(FString OAuthToken, FString ProjectID, FString DocumentPath, FString JString, const FStringDelegate& Del)
@@ -76,13 +83,21 @@ void UFStoreFunctions::WriteJsonDocument(FString OAuthToken, FString ProjectID, 
 	HeaderMap.Add("Authorization", "Bearer " + OAuthToken);
 	FString PayloadString = "{\"fields\": {\"json\": {\"stringValue\": \""+JString+"\"}}}";
 	FString urlStr = preparePathString(ProjectID, DocumentPath);
-	RH->MyHttpCall("PATCH", urlStr, HeaderMap, this, &UFStoreFunctions::RecieveWriteResponse, false,PayloadString);
+	RH->MyHttpCall("PATCH", urlStr, HeaderMap, this, &UFStoreFunctions::RecieveWriteResponse, true,PayloadString);
 	RH->ConditionalBeginDestroy();
 }
 
 void UFStoreFunctions::RecieveWriteResponse(TSharedPtr<FJsonObject> PTR, FString AsStr)
 {
-	ResponseDelegate.ExecuteIfBound(AsStr);
+	if (PTR->HasField("fields"))
+	{
+		ResponseDelegate.ExecuteIfBound(AsStr, true);
+	}
+	else 
+	{
+		ResponseDelegate.ExecuteIfBound(AsStr, false);
+	}
+	
 	UE_LOG(LogHttp, Display, TEXT("response: %s"), *AsStr);
 	UE_LOG(LogHttp, Display, TEXT("End Response"));
 }
@@ -91,10 +106,11 @@ void UFStoreFunctions::RecieveAccessToken(TSharedPtr<FJsonObject> PTR, FString A
 {
 	FString tokString;
 	if (PTR->TryGetStringField("access_token", tokString)) {
-		ResponseDelegate.ExecuteIfBound(tokString);
+		ResponseDelegate.ExecuteIfBound(tokString,true);
 	}
-	else {
-		ResponseDelegate.ExecuteIfBound("false");
+	else 
+	{
+		ResponseDelegate.ExecuteIfBound("false",false);
 	}
 	
 }
@@ -126,15 +142,17 @@ bool UFStoreFunctions::getToken(FString filename, const FStringDelegate& Del)
 			FString pkey = fileJson->GetStringField("private_key");
 
 			//prepare jwt token
-			auto token = jwt::create()
-				.set_issuer(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
-				.set_type("JWS")
-				.set_subject(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
-				.set_audience("https://oauth2.googleapis.com/token")
-				.set_payload_claim("scope", jwt::claim(std::string("https://www.googleapis.com/auth/datastore")))
-				.set_issued_at(std::chrono::system_clock::now())
-				.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
-				.sign(jwt::algorithm::rs256{ "secret",std::string(TCHAR_TO_UTF8(*pkey)) });
+			try
+			{
+				auto token = jwt::create()
+					.set_issuer(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
+					.set_type("JWS")
+					.set_subject(std::string(TCHAR_TO_UTF8(*fileJson->GetStringField("client_email"))))
+					.set_audience("https://oauth2.googleapis.com/token")
+					.set_payload_claim("scope", jwt::claim(std::string("https://www.googleapis.com/auth/datastore")))
+					.set_issued_at(std::chrono::system_clock::now())
+					.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
+					.sign(jwt::algorithm::rs256{ "secret",std::string(TCHAR_TO_UTF8(*pkey)) });
 
 			ResponseDelegate = Del;
 			//prepare http call
@@ -148,6 +166,11 @@ bool UFStoreFunctions::getToken(FString filename, const FStringDelegate& Del)
 			RH->MyHttpCall("POST", "https://oauth2.googleapis.com/token", HeaderMap, this, &UFStoreFunctions::RecieveAccessToken, false, PayloadString);
 			RH->ConditionalBeginDestroy();
 			return true;
+			}
+			catch (const std::exception&)
+			{
+				return false;
+			}
 		}
 		else
 		{

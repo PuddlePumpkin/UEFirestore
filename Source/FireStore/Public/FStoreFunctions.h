@@ -12,7 +12,7 @@
 /**
  * 
  */
-DECLARE_DYNAMIC_DELEGATE_OneParam(FStringDelegate, FString, str);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FStringDelegate, FString, str, bool, Success);
 USTRUCT()
 struct FJSString
 {
