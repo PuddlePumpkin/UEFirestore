@@ -45,7 +45,7 @@ void UFStoreFunctions::RequestJsonDocument(FString OAuthToken, FString ProjectID
 	TMap<FString, FString> HeaderMap;
 	HeaderMap.Add("Authorization", "Bearer " + OAuthToken);
 	FString urlStr = preparePathString(ProjectID, DocumentPath);
-	RH->MyHttpCall("GET", urlStr, HeaderMap,this,&UFStoreFunctions::RecieveJsonDocument,true);
+	RH->MyHttpCall("GET", urlStr, HeaderMap,this,&UFStoreFunctions::RecieveJsonDocument,false);
 	RH->ConditionalBeginDestroy();
 }
 void UFStoreFunctions::RecieveJsonDocument(TSharedPtr<FJsonObject> PTR, FString AsStr)

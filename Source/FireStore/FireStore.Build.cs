@@ -47,7 +47,6 @@ public class FireStore : ModuleRules
 				"SlateCore",
 				"OpenSSL",
 				// ... add private dependencies that you statically link with here ...
-				//json Http stuff	
 				"Http",
 				"Json",
 				"JsonUtilities",
